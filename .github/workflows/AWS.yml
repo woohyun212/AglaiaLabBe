@@ -30,7 +30,6 @@ jobs:
       
     - name: Build, tag, and push image to Amazon ECR
       run: |
-        docker build -t aglaia_lab_fe .
-        docker tag aglaia_lab_fe:latest 079558640615.dkr.ecr.ap-northeast-2.amazonaws.com/aglaia_lab_fe:latest
-        docker push 079558640615.dkr.ecr.ap-northeast-2.amazonaws.com/aglaia_lab_fe:latest
-        
+        docker build -t aglaia_lab_be .
+        docker tag aglaia_lab_be:latest 079558640615.dkr.ecr.ap-northeast-2.amazonaws.com/aglaia_lab_be:latest
+        docker push 079558640615.dkr.ecr.ap-northeast-2.amazonaws.com/aglaia_lab_be:latest
