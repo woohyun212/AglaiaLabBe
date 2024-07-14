@@ -1,0 +1,8 @@
+
+ {"characterCode": "캐릭터 코드",
+  "usage": "캐릭터로 플레이한 매치 수",
+  "maxKillings": "한 경기에서의 최대 킬 수",
+  "top3": "Top 3 (또는 그 이상)으로 끝난 경기 수",
+  "wins": "1등으로 끝난 경기 수",
+  "top3Rate": "시즌의 Top 3 비율",
+  "averageRank": "시즌의 평균 순위"}

@@ -1,0 +1,352 @@
+[
+    {
+        "code": 1,
+        "monster": "Chicken",
+        "mode": 7,
+        "maxHp": 137,
+        "attackPower": 21,
+        "defense": 3.8,
+        "moveSpeed": 0.08,
+        "gainExp": 7
+    },
+    {
+        "code": 2,
+        "monster": "Bat",
+        "mode": 7,
+        "maxHp": 114,
+        "attackPower": 22,
+        "defense": 4.3,
+        "moveSpeed": 0,
+        "gainExp": 11
+    },
+    {
+        "code": 3,
+        "monster": "Boar",
+        "mode": 7,
+        "maxHp": 167,
+        "attackPower": 23,
+        "defense": 5,
+        "moveSpeed": 0.03,
+        "gainExp": 16
+    },
+    {
+        "code": 4,
+        "monster": "WildDog",
+        "mode": 7,
+        "maxHp": 100,
+        "attackPower": 19,
+        "defense": 3.4,
+        "moveSpeed": 0,
+        "gainExp": 12
+    },
+    {
+        "code": 5,
+        "monster": "Wolf",
+        "mode": 7,
+        "maxHp": 79,
+        "attackPower": 14,
+        "defense": 3,
+        "moveSpeed": 0,
+        "gainExp": 14
+    },
+    {
+        "code": 6,
+        "monster": "Bear",
+        "mode": 7,
+        "maxHp": 150,
+        "attackPower": 17,
+        "defense": 3.6,
+        "moveSpeed": 0.01,
+        "gainExp": 23
+    },
+    {
+        "code": 7,
+        "monster": "Wickline",
+        "mode": 7,
+        "maxHp": 300,
+        "attackPower": 27,
+        "defense": 7,
+        "moveSpeed": 0.01,
+        "gainExp": 50
+    },
+    {
+        "code": 8,
+        "monster": "Alpha",
+        "mode": 7,
+        "maxHp": 200,
+        "attackPower": 20,
+        "defense": 6,
+        "moveSpeed": 0,
+        "gainExp": 50
+    },
+    {
+        "code": 9,
+        "monster": "Omega",
+        "mode": 7,
+        "maxHp": 200,
+        "attackPower": 25,
+        "defense": 6,
+        "moveSpeed": 0,
+        "gainExp": 50
+    },
+    {
+        "code": 10,
+        "monster": "Gamma",
+        "mode": 7,
+        "maxHp": 100,
+        "attackPower": 10,
+        "defense": 10,
+        "moveSpeed": 0,
+        "gainExp": 50
+    },
+    {
+        "code": 11,
+        "monster": "Drone",
+        "mode": 7,
+        "maxHp": 50,
+        "attackPower": 3,
+        "defense": 3,
+        "moveSpeed": 0,
+        "gainExp": 5
+    },
+    {
+        "code": 12,
+        "monster": "Chicken",
+        "mode": 7,
+        "maxHp": 227,
+        "attackPower": 29,
+        "defense": 5,
+        "moveSpeed": 0.08,
+        "gainExp": 13
+    },
+    {
+        "code": 13,
+        "monster": "Bat",
+        "mode": 7,
+        "maxHp": 188,
+        "attackPower": 31,
+        "defense": 4.3,
+        "moveSpeed": 0,
+        "gainExp": 22
+    },
+    {
+        "code": 14,
+        "monster": "Boar",
+        "mode": 7,
+        "maxHp": 239,
+        "attackPower": 33,
+        "defense": 5,
+        "moveSpeed": 0.03,
+        "gainExp": 25
+    },
+    {
+        "code": 15,
+        "monster": "WildDog",
+        "mode": 7,
+        "maxHp": 150,
+        "attackPower": 20,
+        "defense": 3.4,
+        "moveSpeed": 0,
+        "gainExp": 17
+    },
+    {
+        "code": 16,
+        "monster": "Wolf",
+        "mode": 7,
+        "maxHp": 131,
+        "attackPower": 20,
+        "defense": 4,
+        "moveSpeed": 0,
+        "gainExp": 24
+    },
+    {
+        "code": 17,
+        "monster": "Bear",
+        "mode": 7,
+        "maxHp": 210,
+        "attackPower": 23,
+        "defense": 4.1,
+        "moveSpeed": 0.01,
+        "gainExp": 32
+    },
+    {
+        "code": 100,
+        "monster": "Turret",
+        "mode": 8,
+        "maxHp": 0,
+        "attackPower": 0,
+        "defense": 0,
+        "moveSpeed": 0,
+        "gainExp": 0
+    },
+    {
+        "code": 101,
+        "monster": "Chicken",
+        "mode": 8,
+        "maxHp": 0,
+        "attackPower": 0,
+        "defense": 0,
+        "moveSpeed": 0,
+        "gainExp": 0
+    },
+    {
+        "code": 102,
+        "monster": "Bat",
+        "mode": 8,
+        "maxHp": 0,
+        "attackPower": 0,
+        "defense": 0,
+        "moveSpeed": 0,
+        "gainExp": 0
+    },
+    {
+        "code": 103,
+        "monster": "Boar",
+        "mode": 8,
+        "maxHp": 0,
+        "attackPower": 0,
+        "defense": 0,
+        "moveSpeed": 0,
+        "gainExp": 0
+    },
+    {
+        "code": 104,
+        "monster": "WildDog",
+        "mode": 8,
+        "maxHp": 0,
+        "attackPower": 0,
+        "defense": 0,
+        "moveSpeed": 0,
+        "gainExp": 0
+    },
+    {
+        "code": 105,
+        "monster": "Wolf",
+        "mode": 8,
+        "maxHp": 0,
+        "attackPower": 0,
+        "defense": 0,
+        "moveSpeed": 0,
+        "gainExp": 0
+    },
+    {
+        "code": 106,
+        "monster": "Bear",
+        "mode": 8,
+        "maxHp": 0,
+        "attackPower": 0,
+        "defense": 0,
+        "moveSpeed": 0,
+        "gainExp": 0
+    },
+    {
+        "code": 107,
+        "monster": "Wickline",
+        "mode": 8,
+        "maxHp": 0,
+        "attackPower": 0,
+        "defense": 0,
+        "moveSpeed": 0,
+        "gainExp": 0
+    },
+    {
+        "code": 108,
+        "monster": "Alpha",
+        "mode": 8,
+        "maxHp": 0,
+        "attackPower": 0,
+        "defense": 0,
+        "moveSpeed": 0,
+        "gainExp": 0
+    },
+    {
+        "code": 109,
+        "monster": "Omega",
+        "mode": 8,
+        "maxHp": 0,
+        "attackPower": 0,
+        "defense": 0,
+        "moveSpeed": 0,
+        "gainExp": 0
+    },
+    {
+        "code": 110,
+        "monster": "Gamma",
+        "mode": 8,
+        "maxHp": 0,
+        "attackPower": 0,
+        "defense": 0,
+        "moveSpeed": 0,
+        "gainExp": 0
+    },
+    {
+        "code": 111,
+        "monster": "Drone",
+        "mode": 8,
+        "maxHp": 0,
+        "attackPower": 0,
+        "defense": 0,
+        "moveSpeed": 0,
+        "gainExp": 0
+    },
+    {
+        "code": 112,
+        "monster": "Chicken",
+        "mode": 8,
+        "maxHp": 0,
+        "attackPower": 0,
+        "defense": 0,
+        "moveSpeed": 0,
+        "gainExp": 0
+    },
+    {
+        "code": 113,
+        "monster": "Bat",
+        "mode": 8,
+        "maxHp": 0,
+        "attackPower": 0,
+        "defense": 0,
+        "moveSpeed": 0,
+        "gainExp": 0
+    },
+    {
+        "code": 114,
+        "monster": "Boar",
+        "mode": 8,
+        "maxHp": 0,
+        "attackPower": 0,
+        "defense": 0,
+        "moveSpeed": 0,
+        "gainExp": 0
+    },
+    {
+        "code": 115,
+        "monster": "WildDog",
+        "mode": 8,
+        "maxHp": 0,
+        "attackPower": 0,
+        "defense": 0,
+        "moveSpeed": 0,
+        "gainExp": 0
+    },
+    {
+        "code": 116,
+        "monster": "Wolf",
+        "mode": 8,
+        "maxHp": 0,
+        "attackPower": 0,
+        "defense": 0,
+        "moveSpeed": 0,
+        "gainExp": 0
+    },
+    {
+        "code": 117,
+        "monster": "Bear",
+        "mode": 8,
+        "maxHp": 0,
+        "attackPower": 0,
+        "defense": 0,
+        "moveSpeed": 0,
+        "gainExp": 0
+    }
+]

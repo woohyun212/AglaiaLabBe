@@ -1,0 +1,137 @@
+[
+    {
+        "code": 1,
+        "modeType": 1,
+        "areaAttributesCreateEventCount": 1,
+        "itemCode": 999999,
+        "type": "Misc",
+        "value": 2,
+        "selectable": true
+    },
+    {
+        "code": 2,
+        "modeType": 1,
+        "areaAttributesCreateEventCount": 1,
+        "itemCode": 401208,
+        "type": "Misc",
+        "value": 1,
+        "selectable": true
+    },
+    {
+        "code": 3,
+        "modeType": 1,
+        "areaAttributesCreateEventCount": 1,
+        "itemCode": 401209,
+        "type": "Misc",
+        "value": 1,
+        "selectable": true
+    },
+    {
+        "code": 4,
+        "modeType": 1,
+        "areaAttributesCreateEventCount": 1,
+        "itemCode": 401304,
+        "type": "Misc",
+        "value": 2,
+        "selectable": true
+    },
+    {
+        "code": 5,
+        "modeType": 1,
+        "areaAttributesCreateEventCount": 1,
+        "itemCode": 401403,
+        "type": "Misc",
+        "value": 3,
+        "selectable": true
+    },
+    {
+        "code": 6,
+        "modeType": 2,
+        "areaAttributesCreateEventCount": 1,
+        "itemCode": 999999,
+        "type": "Misc",
+        "value": 2,
+        "selectable": true
+    },
+    {
+        "code": 7,
+        "modeType": 2,
+        "areaAttributesCreateEventCount": 1,
+        "itemCode": 401208,
+        "type": "Misc",
+        "value": 1,
+        "selectable": true
+    },
+    {
+        "code": 8,
+        "modeType": 2,
+        "areaAttributesCreateEventCount": 1,
+        "itemCode": 401209,
+        "type": "Misc",
+        "value": 1,
+        "selectable": true
+    },
+    {
+        "code": 9,
+        "modeType": 2,
+        "areaAttributesCreateEventCount": 1,
+        "itemCode": 401304,
+        "type": "Misc",
+        "value": 2,
+        "selectable": true
+    },
+    {
+        "code": 10,
+        "modeType": 2,
+        "areaAttributesCreateEventCount": 1,
+        "itemCode": 401403,
+        "type": "Misc",
+        "value": 3,
+        "selectable": true
+    },
+    {
+        "code": 11,
+        "modeType": 4,
+        "areaAttributesCreateEventCount": 1,
+        "itemCode": 999999,
+        "type": "Misc",
+        "value": 1,
+        "selectable": true
+    },
+    {
+        "code": 12,
+        "modeType": 4,
+        "areaAttributesCreateEventCount": 1,
+        "itemCode": 401208,
+        "type": "Misc",
+        "value": 1,
+        "selectable": true
+    },
+    {
+        "code": 13,
+        "modeType": 4,
+        "areaAttributesCreateEventCount": 1,
+        "itemCode": 401209,
+        "type": "Misc",
+        "value": 1,
+        "selectable": true
+    },
+    {
+        "code": 14,
+        "modeType": 4,
+        "areaAttributesCreateEventCount": 1,
+        "itemCode": 401304,
+        "type": "Misc",
+        "value": 4,
+        "selectable": true
+    },
+    {
+        "code": 15,
+        "modeType": 4,
+        "areaAttributesCreateEventCount": 1,
+        "itemCode": 401403,
+        "type": "Misc",
+        "value": 7,
+        "selectable": true
+    }
+]
