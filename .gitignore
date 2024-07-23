@@ -172,7 +172,6 @@ cython_debug/
 #.idea/
 
 # End of https://www.toptal.com/developers/gitignore/api/django
-/.idea
 /.env
 /bser_api/api_test.py
 /bser_api/data_definitions/API 문서 오류.md
