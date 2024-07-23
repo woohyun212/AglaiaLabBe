@@ -23,12 +23,15 @@ INSTALLED_APPS = [
 
     # Installed Package
     'rest_framework',
-
+    'corsheaders',
     # Apps
     'nadia.apps.NadiaConfig',
 ]
 
 MIDDLEWARE = [
+    # CORS
+    'corsheaders.middleware.CorsMiddleware',
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -108,7 +111,7 @@ USE_TZ = False
 
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'staticfiles'), ]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'staticfiles'),]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -123,3 +126,40 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ]
 }
+
+# COOP
+SECURE_CROSS_ORIGIN_OPENER_POLICY = None
+# CORS
+CORS_ORIGIN_ALLOW_ALL = True
+
+# CORS_ORIGIN_WHITELIST = (
+#     "http://localhost:8080",
+# )
+# from corsheaders.defaults import default_methods, default_headers
+# CORS_ALLOW_METHODS = default_methods
+# CORS_ALLOW_HEADERS = default_headers
+
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+
+# # MIMETYPE
+# import mimetypes
+# mimetypes.add_type("text/css", ".css", True)
