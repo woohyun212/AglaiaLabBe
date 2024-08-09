@@ -9,6 +9,7 @@ env = environ.Env(DEBUG=(bool, False))
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 SECRET_KEY = env('SECRET_KEY')
+ER_API_KEY = env('ER_API_KEY')
 DEBUG = env('DEBUG')
 
 # Application definition
@@ -158,7 +159,3 @@ CORS_ALLOW_HEADERS = [
     'x-csrftoken',
     'x-requested-with',
 ]
-
-# # MIMETYPE
-# import mimetypes
-# mimetypes.add_type("text/css", ".css", True)
