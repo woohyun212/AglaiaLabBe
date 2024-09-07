@@ -10,21 +10,16 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['url', 'username', 'email', 'is_staff']
 
 
-class CharacterStatSerializer(serializers.HyperlinkedModelSerializer):
+class CharacterStatSerializer(serializers.ModelSerializer):
     class Meta:
         model = CharacterStatModel
-        fields = '__all__'
-    # averageRank = serializers.FloatField()
-    # characterCode = serializers.IntegerField()
-    # maxKillings = serializers.IntegerField()
-    # top3 = serializers.IntegerField()
-    # top3Rate = serializers.FloatField()
-    # totalGames = serializers.IntegerField()
-    # usages = serializers.IntegerField()
-    # wins = serializers.IntegerField()
+        fields = [
+        'player_stats', 'average_rank', 'character_code', 'max_killings', 'top3', 'top3_rate', 'total_games', 'usages',
+        'wins']
 
 
 class PlayerStatsSerializer(serializers.HyperlinkedModelSerializer):
+    character_stats = CharacterStatSerializer(many=True, read_only=True)
 
     class Meta:
         model = PlayerStatsModel
@@ -40,28 +35,3 @@ class PlayerStatsSerializer(serializers.HyperlinkedModelSerializer):
         extra_kwargs = {
             'url': {'lookup_field': 'nickname'}
         }
-
-    # userNum = serializers.IntegerField()
-    # nickname = serializers.CharField(max_length=100)
-    # seasonId = serializers.IntegerField()
-    # matchingMode = serializers.IntegerField()
-    # matchingTeamMode = serializers.IntegerField()
-    # mmr = serializers.IntegerField()
-    # rank = serializers.IntegerField()
-    # rankPercent = serializers.FloatField()
-    # rankSize = serializers.IntegerField()
-    # totalGames = serializers.IntegerField()
-    # totalWins = serializers.IntegerField()
-    # totalTeamKills = serializers.IntegerField()
-    # totalDeaths = serializers.IntegerField()
-    # escapeCount = serializers.IntegerField()
-    # averageRank = serializers.FloatField()
-    # averageKills = serializers.FloatField()
-    # averageAssistants = serializers.FloatField()
-    # averageHunts = serializers.FloatField()
-    # top1 = serializers.FloatField()
-    # top2 = serializers.FloatField()
-    # top3 = serializers.FloatField()
-    # top5 = serializers.FloatField()
-    # top7 = serializers.FloatField()
-    # characterStats = CharacterStatSerializer(many=True)

@@ -3,7 +3,7 @@ from django.db import models
 
 # Create your models here.
 class PlayerStatsModel(models.Model):
-    user_num = models.IntegerField(unique=True, primary_key=True)
+    user_num = models.IntegerField()
     nickname = models.CharField(max_length=100)
     season_id = models.IntegerField()
     matching_mode = models.IntegerField(choices=[(2, 'Normal'), (3, 'Ranked')])
@@ -33,6 +33,7 @@ class PlayerStatsModel(models.Model):
 
 class CharacterStatModel(models.Model):
     player_stats = models.ForeignKey(PlayerStatsModel, related_name='character_stats', on_delete=models.CASCADE)
+    season_id = models.IntegerField()
     average_rank = models.FloatField()
     character_code = models.IntegerField()
     max_killings = models.IntegerField()

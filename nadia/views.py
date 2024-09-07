@@ -25,9 +25,6 @@ class HomePageView(View):
         return JsonResponse(data)
 
 
-
-
-
 # URL: /api/v1/leaderboard/
 # Method: GET
 # Description: 전 세계 또는 지역별 플레이어 순위 제공
@@ -140,42 +137,75 @@ class PlayerStatsViewSet(viewsets.ModelViewSet):
     serializer_class = PlayerStatsSerializer
     queryset = PlayerStatsModel.objects.all()
     lookup_field = 'nickname'
+
     def retrieve(self, request, nickname):
         season = request.query_params.get('season', CURRENT_SEASON)
 
         # 외부 API 호출하여 데이터 가져오기
         try:
             user_num = er_api.get_user_num(nickname)
+            # PlayerStatsModel  에서 query_set 불러오기
+            player_stats = PlayerStatsModel.objects.get(user_num=user_num, season_id=season)
+            # 저장된 데이터를 직렬화하여 반환
+            serializer = PlayerStatsSerializer(player_stats, context={'request': request})
+            return Response(serializer.data)
+
+        # 매칭되는 데이터가 없을 경우
+        except PlayerStatsModel.DoesNotExist:
+            player_stats = self.update_or_create_playerstats(request=request, nickname=nickname)
+
+            # 해당되는 데이터를 찾지 못했다면
+            if not isinstance(player_stats, PlayerStatsModel):
+                return Response(status=status.HTTP_404_NOT_FOUND)
+            # 저장된 데이터를 직렬화하여 반환
+            serializer = PlayerStatsSerializer(player_stats, context={'request': request})
+            return Response(serializer.data)
+
+        except requests.exceptions.RequestException as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @staticmethod
+    def update_or_create_playerstats(request, nickname):
+        # season 파라미터가 지정되어 있다면
+        season = request.query_params.get('season', CURRENT_SEASON)
+        # 외부 API 호출하여 데이터 가져오기
+        try:
+            user_num = er_api.get_user_num(nickname)
             user_stat = er_api.fetch_user_stats(user_num=user_num, season_id=season)
+            if "message" in user_stat:
+                return user_stat
             data = user_stat[0]
 
+            defaluts = {
+                'nickname': nickname,
+                'matching_mode': data['matchingMode'],
+                'matching_team_mode': data['matchingTeamMode'],
+                'rank': data['rank'],
+                'rank_percent': data['rankPercent'],
+                'rank_size': data['rankSize'],
+                'total_games': data['totalGames'],
+                'total_wins': data['totalWins'],
+                'total_team_kills': data['totalTeamKills'],
+                'total_deaths': data['totalDeaths'],
+                'escape_count': data['escapeCount'],
+                'average_rank': data['averageRank'],
+                'average_kills': data['averageKills'],
+                'average_assistants': data['averageAssistants'],
+                'average_hunts': data['averageHunts'],
+                'top1': data['top1'],
+                'top2': data['top2'],
+                'top3': data['top3'],
+                'top5': data['top5'],
+                'top7': data['top7'],
+                'mmr': data['mmr'],
+            }
+            if season == '0':
+                defaluts.pop('mmr')
             # PlayerStatsModel에 해당 데이터 저장
             player_stats, created = PlayerStatsModel.objects.update_or_create(
                 user_num=user_num,
-                defaults={
-                    'nickname': nickname,
-                    'season_id': season,
-                    'matching_mode': data['matchingMode'],
-                    'matching_team_mode': data['matchingTeamMode'],
-                    'mmr': data['mmr'],
-                    'rank': data['rank'],
-                    'rank_percent': data['rankPercent'],
-                    'rank_size': data['rankSize'],
-                    'total_games': data['totalGames'],
-                    'total_wins': data['totalWins'],
-                    'total_team_kills': data['totalTeamKills'],
-                    'total_deaths': data['totalDeaths'],
-                    'escape_count': data['escapeCount'],
-                    'average_rank': data['averageRank'],
-                    'average_kills': data['averageKills'],
-                    'average_assistants': data['averageAssistants'],
-                    'average_hunts': data['averageHunts'],
-                    'top1': data['top1'],
-                    'top2': data['top2'],
-                    'top3': data['top3'],
-                    'top5': data['top5'],
-                    'top7': data['top7'],
-                }
+                season_id=season,
+                defaults=defaluts
             )
 
             # CharacterStatModel에 캐릭터 통계 저장
@@ -183,6 +213,7 @@ class PlayerStatsViewSet(viewsets.ModelViewSet):
                 CharacterStatModel.objects.update_or_create(
                     player_stats=player_stats,
                     character_code=character_stat['characterCode'],
+                    season_id=season,
                     defaults={
                         'average_rank': character_stat['averageRank'],
                         'max_killings': character_stat['maxKillings'],
@@ -193,10 +224,8 @@ class PlayerStatsViewSet(viewsets.ModelViewSet):
                         'wins': character_stat['wins'],
                     }
                 )
-
-            # 저장된 데이터를 직렬화하여 반환
-            serializer = PlayerStatsSerializer(player_stats, context={'request': request})
-            return Response(serializer.data)
+            # 생성된 PlayerStats return
+            return player_stats
 
         except requests.exceptions.RequestException as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
