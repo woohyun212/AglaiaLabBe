@@ -176,7 +176,6 @@ cython_debug/
 .idea
 bser_api/api_test.py
 bser_api/data_definitions/API 문서 오류.md
-l10n-Korean-20240705012554.json
 bser_api/er_statics.py
 static/*
 !static
