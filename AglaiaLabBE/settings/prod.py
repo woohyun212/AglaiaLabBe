@@ -2,8 +2,6 @@ from .base import *
 
 ALLOWED_HOSTS = ['*']
 
-
-
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
