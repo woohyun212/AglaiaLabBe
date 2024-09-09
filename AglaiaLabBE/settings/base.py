@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'corsheaders',
     # Apps
     'nadia.apps.NadiaConfig',
+    'thomas.apps.ThomasConfig',
 ]
 
 MIDDLEWARE = [
