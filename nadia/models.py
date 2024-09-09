@@ -4,7 +4,7 @@ from django.db import models
 
 # 플레이어 정보 모델
 class Player(models.Model):
-    user_num = models.IntegerField()  # Unique number identifier of the user.
+    user_num = models.BigIntegerField(primary_key=True)  # Unique number identifier of the user.
     nickname = models.CharField(max_length=100)  # 이름
 
 
