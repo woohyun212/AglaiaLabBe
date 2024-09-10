@@ -12,8 +12,8 @@ class Player(models.Model):
 class PlayerStats(models.Model):
     player = models.OneToOneField(Player, on_delete=models.CASCADE)
     season_id = models.IntegerField()
-    matching_mode = models.IntegerField()  # 2 : Normal, 3 : Ranked
-    matching_team_mode = models.IntegerField()  # 1 : Solo,2 : Duo, 3 : Squad
+    matching_mode = models.IntegerField()  # 2 : Normal, 3 : Ranked, 6: Cobalt Protocol
+    matching_team_mode = models.IntegerField()  # 1 : Solo,2 : Duo, 3 : Squad, 4: 4Squad (코발트 전용)
 
     mmr = models.IntegerField()  # 현재 mmr
     rank = models.IntegerField()  # 랭크 등수
@@ -29,7 +29,7 @@ class PlayerStats(models.Model):
     # average_team_kills = models.FloatField()  # 평균 tk는 전체 TK를 total_games로 나눠서 계산하여 db에 저장하면될 것 같은데
     average_kills = models.FloatField()  # 평균 킬
     average_assistants = models.FloatField()  # 평균 어시스트
-    average_damage = models.FloatField()  # 평균 데미지
+    average_damage = models.IntegerField()  # 평균 데미지
     average_hunts = models.FloatField()  # 야생 동물 사냥 횟수 평균
 
     top1 = models.FloatField()  # 1등 비율
@@ -38,10 +38,15 @@ class PlayerStats(models.Model):
     top5 = models.FloatField()  # 5등 비율
     top7 = models.FloatField()  # 7등 비율
 
+    update_at = models.DateTimeField(auto_now=True)
+
     class Meta:
         indexes = [
             models.Index(fields=['player', 'season_id']),
+            models.Index(fields=['player', 'season_id', 'matching_mode', 'matching_team_mode']),
         ]
+
+
 class MMRHistory(models.Model):
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
     open_mmr = models.FloatField()
