@@ -26,6 +26,9 @@ class GameInfo(models.Model):
     mmr_before = models.IntegerField(null=True)  # 이전 mmr
     mmr_gain = models.IntegerField(null=True)  # mmr 변화량
     mmr_after = models.IntegerField(null=True)  # 변경된 mmr
+    mmr_avg = models.IntegerField(null=True)  # 팀 평균 mmr
+    give_up = models.IntegerField()  # 게임 포기 여부
+    route_id_of_start = models.IntegerField()  # 루트 ID
 
     def __str__(self):
         return f"Game {self.game_id} - Player {self.nickname}"
@@ -35,14 +38,17 @@ class GameInfo(models.Model):
         indexes = [
             models.Index(fields=['user_num']),
             models.Index(fields=['game_id']),
+            models.Index(fields=['start_dtm']),
         ]
 
 
 # 전투 기록 테이블
 class BattleRecord(models.Model):
-    game = models.ForeignKey(GameInfo, on_delete=models.CASCADE)  # 게임 정보와 연결
-    user_num = models.BigIntegerField()  # GameInfo의 user_num을 저장
+    game = models.OneToOneField(GameInfo, on_delete=models.CASCADE)  # 게임 정보와 연결
+    # user_num = models.BigIntegerField()  # GameInfo의 user_num을 저장
+    # 외래키로 설정된 game이 이미 어떤 게임의 어떤 플레이어인지 구분을 지어주기 떄문에 필요없음
     character_level = models.IntegerField()  # 캐릭터 레벨
+    team_kill = models.IntegerField()  # 팀에서 기록한 킬
     player_kill = models.IntegerField()  # 킬 수
     player_assistant = models.IntegerField()  # 어시스트 수
     monster_kill = models.IntegerField()  # 몬스터 킬 수
@@ -102,13 +108,16 @@ class BattleRecord(models.Model):
         return f"Battle record for game {self.game.game_id}"
 
     class Meta:
-        unique_together = ('game', 'user_num')
+        # unique_together = ('game', 'user_num')
+        indexes = [
+            models.Index(fields=['game']),
+        ]
 
 
 # 장비 및 특성 정보 테이블
 class EquipmentAndTraits(models.Model):
-    game = models.ForeignKey(GameInfo, on_delete=models.CASCADE)  # 게임 정보와 연결
-    user_num = models.BigIntegerField()  # GameInfo의 user_num을 저장
+    game = models.OneToOneField(GameInfo, on_delete=models.CASCADE)  # 게임 정보와 연결
+    # user_num = models.BigIntegerField()  # GameInfo의 user_num을 저장
     skin_code = models.IntegerField()  # 사용한 스킨
     best_weapon = models.IntegerField()  # 가장 높은 무기 숙련도 번호
     best_weapon_level = models.IntegerField()  # 가장 높은 무기 숙련도 레벨
@@ -131,4 +140,7 @@ class EquipmentAndTraits(models.Model):
         return f"Equipment and Traits for game {self.game.game_id}"
 
     class Meta:
-        unique_together = ('game', 'user_num')
+        # unique_together = ('game', 'user_num')
+        indexes = [
+            models.Index(fields=['game']),
+        ]

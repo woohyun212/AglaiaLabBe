@@ -104,6 +104,10 @@ def save_game_data(user_stats):
                 'mmr_before': stats.get('mmrBefore', None),
                 'mmr_gain': stats.get('mmrGain', None),
                 'mmr_after': stats.get('mmrAfter', None),
+
+                'give_up': stats.get('giveUp'),
+                'route_id_of_start': stats.get('routeIdOfStart'),
+                'mmr_avg': stats.get('mmrAvg', None),
             }
         )
 
@@ -111,6 +115,7 @@ def save_game_data(user_stats):
         BattleRecord.objects.get_or_create(
             game=game_info,
             character_level=stats['characterLevel'],
+            team_kill=stats['teamKill'],
             player_kill=stats['playerKill'],
             player_assistant=stats['playerAssistant'],
             monster_kill=stats['monsterKill'],
