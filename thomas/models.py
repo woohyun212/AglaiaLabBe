@@ -44,7 +44,7 @@ class GameInfo(models.Model):
 
 # 전투 기록 테이블
 class BattleRecord(models.Model):
-    game = models.OneToOneField(GameInfo, on_delete=models.CASCADE)  # 게임 정보와 연결
+    game = models.OneToOneField(GameInfo, on_delete=models.CASCADE, related_name='battle_record')  # 게임 정보와 연결
     # user_num = models.BigIntegerField()  # GameInfo의 user_num을 저장
     # 외래키로 설정된 game이 이미 어떤 게임의 어떤 플레이어인지 구분을 지어주기 떄문에 필요없음
     character_level = models.IntegerField()  # 캐릭터 레벨
@@ -116,7 +116,7 @@ class BattleRecord(models.Model):
 
 # 장비 및 특성 정보 테이블
 class EquipmentAndTraits(models.Model):
-    game = models.OneToOneField(GameInfo, on_delete=models.CASCADE)  # 게임 정보와 연결
+    game = models.OneToOneField(GameInfo, on_delete=models.CASCADE, related_name='equipment_and_traits')  # 게임 정보와 연결
     # user_num = models.BigIntegerField()  # GameInfo의 user_num을 저장
     skin_code = models.IntegerField()  # 사용한 스킨
     best_weapon = models.IntegerField()  # 가장 높은 무기 숙련도 번호
