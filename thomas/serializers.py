@@ -16,8 +16,8 @@ class EquipmentAndTraitsSerializer(serializers.ModelSerializer):
 
 class GameInfoSerializer(serializers.ModelSerializer):
     # BattleRecord, EquipmentAndTraits 중첩
-    battle_records = BattleRecordSerializer(source='battlerecord_set', many=True, read_only=True)
-    equipment_and_traits = EquipmentAndTraitsSerializer(source='equipmentandtraits_set', many=True, read_only=True)
+    battle_records = BattleRecordSerializer(read_only=True)
+    equipment_and_traits = EquipmentAndTraitsSerializer(read_only=True)
 
     class Meta:
         model = GameInfo
@@ -25,21 +25,39 @@ class GameInfoSerializer(serializers.ModelSerializer):
         extra_fields = ['battle_records', 'equipment_and_traits']
 
 
+class BattleRecordSimpleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BattleRecord
+        fields = [
+            'character_level',
+            'team_kill',
+            'player_kill',
+            'player_assistant',
+            'damage_to_player'
+        ]
+
+
 class GameInfoSimpleSerializer(serializers.ModelSerializer):
+    battle_record = BattleRecordSimpleSerializer(read_only=True)
+    # equipment_and_traits = EquipmentAndTraitsSerializer(read_only=True)
+
     class Meta:
         model = GameInfo
-        fields = ['nickname',
-                  'game_id',
-                  'season_id',
-                  'matching_mode',
-                  # 'matching_team_mode',
-                  'game_rank',
-                  'character_num',
-                  'start_dtm',
-                  'play_time',
-                  # 'team_number',
-                  'pre_made',
-                  'mmr_before',
-                  'mmr_gain',
-                  'mmr_after'
-                  ]
+        fields = [
+            'nickname',
+            'game_id',
+            'season_id',
+            'matching_mode',
+            'matching_team_mode',
+            'pre_made',
+            # 'team_number',
+            'character_num',
+            'game_rank',
+            'start_dtm',
+            'play_time',
+            'mmr_gain',
+            'battle_record',
+        ]
+        # extra_fields = ['battle_record',
+        #                 'equipment_and_traits'
+                        # ]
