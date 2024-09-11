@@ -7,10 +7,14 @@ class Player(models.Model):
     user_num = models.BigIntegerField(primary_key=True)  # Unique number identifier of the user.
     nickname = models.CharField(max_length=100)  # 이름
 
+    def __str__(self):
+        return f"{self.nickname} - {self.user_num}"
+
 
 # 플레이어 통계 모델
-class PlayerStats(models.Model):
-    player = models.OneToOneField(Player, on_delete=models.CASCADE)
+class PlayerStat(models.Model):
+    # OneToOne이 아닌데?
+    player = models.ForeignKey(Player, on_delete=models.CASCADE)
     season_id = models.IntegerField()
     matching_mode = models.IntegerField()  # 2 : Normal, 3 : Ranked, 6: Cobalt Protocol
     matching_team_mode = models.IntegerField()  # 1 : Solo,2 : Duo, 3 : Squad, 4: 4Squad (코발트 전용)
@@ -40,6 +44,9 @@ class PlayerStats(models.Model):
 
     update_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return f"{self.player}- {self.season_id}S - {self.matching_mode}M - {self.matching_team_mode}MTM"
+
     class Meta:
         indexes = [
             models.Index(fields=['player', 'season_id']),
@@ -48,16 +55,19 @@ class PlayerStats(models.Model):
 
 
 class MMRHistory(models.Model):
-    player = models.ForeignKey(Player, on_delete=models.CASCADE)
-    open_mmr = models.FloatField()
-    high_mmr = models.FloatField()
-    low_mmr = models.FloatField()
-    close_mmr = models.FloatField()
-    timestamp = models.DateTimeField()
+    player_stat = models.ForeignKey(PlayerStat, on_delete=models.CASCADE, related_name='mmr_history')
+    open_mmr = models.IntegerField()
+    high_mmr = models.IntegerField()
+    low_mmr = models.IntegerField()
+    close_mmr = models.IntegerField()
+    timestamp = models.DateField()
+
+    def __str__(self):
+        return f"{self.player_stat} - {self.timestamp}"
 
 
 class CharacterStats(models.Model):
-    player_stats = models.ForeignKey(PlayerStats, on_delete=models.CASCADE)
+    player_stat = models.ForeignKey(PlayerStat, on_delete=models.CASCADE, related_name='character_stats')
     character_code = models.IntegerField()
 
     most_used_skin_code = models.IntegerField()
@@ -68,12 +78,13 @@ class CharacterStats(models.Model):
     most_trait_second_sub = models.JSONField()
 
     total_games = models.IntegerField()
+    maxKillings = models.IntegerField()
     average_team_kills = models.FloatField()
     average_kills = models.FloatField()
     average_assistants = models.FloatField()
-    average_damage = models.FloatField()
+    average_damage = models.IntegerField()
     average_rank = models.FloatField()
     top1 = models.FloatField()
     top2 = models.FloatField()
     top3 = models.FloatField()
-    earned_rp = models.IntegerField()
+    total_mmr_gain = models.IntegerField()
