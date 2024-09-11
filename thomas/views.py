@@ -50,6 +50,8 @@ def fetch_and_add(request, nickname):
     # if 'next' param is not provided, fetch 20 items
     # else fetch 10 items
     if not next_code:
+        import time
+        time.sleep(1)  # API 호출 정책
         er_data2 = ER.fetch_user_games(user_num=user_num, _next=er_data.get('next'))
         user_stats.extend(er_data2.get('userGames', []))
         next_code = er_data2.get('next', None)
