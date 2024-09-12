@@ -4,7 +4,7 @@ from django.db import models
 
 # 플레이어 정보 모델
 class Player(models.Model):
-    user_num = models.BigIntegerField(primary_key=True)  # Unique number identifier of the user.
+    user_num = models.BigIntegerField(primary_key=True, unique=True)  # Unique number identifier of the user.
     nickname = models.CharField(max_length=100)  # 이름
 
     def __str__(self):
@@ -45,7 +45,7 @@ class PlayerStat(models.Model):
     update_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.player}- {self.season_id}S - {self.matching_mode}M - {self.matching_team_mode}MTM"
+        return f"{self.player}/{self.season_id}S - {self.matching_mode}M - {self.matching_team_mode}MTM"
 
     class Meta:
         indexes = [
@@ -65,11 +65,31 @@ class MMRHistory(models.Model):
     def __str__(self):
         return f"{self.player_stat} - {self.timestamp}"
 
+    class Meta:
+        indexes = [
+            models.Index(fields=['player_stat']),
+        ]
+
 
 class CharacterStats(models.Model):
     player_stat = models.ForeignKey(PlayerStat, on_delete=models.CASCADE, related_name='character_stats')
     character_code = models.IntegerField()
+    # GameInfo 에서
+    total_games = models.IntegerField()
+    average_rank = models.FloatField()
+    top1 = models.FloatField()
+    top2 = models.FloatField()
+    top3 = models.FloatField()
+    total_mmr_gain = models.IntegerField()
 
+    # BattleRecord
+    max_killings = models.IntegerField()
+    average_team_kills = models.FloatField()
+    average_kills = models.FloatField()
+    average_assistants = models.FloatField()
+    average_damage = models.IntegerField()
+
+    # Equipment and Trait
     most_used_skin_code = models.IntegerField()
     most_weapon = models.IntegerField()
     most_tactical_skill_group = models.IntegerField()
@@ -77,14 +97,7 @@ class CharacterStats(models.Model):
     most_trait_first_sub = models.JSONField()
     most_trait_second_sub = models.JSONField()
 
-    total_games = models.IntegerField()
-    maxKillings = models.IntegerField()
-    average_team_kills = models.FloatField()
-    average_kills = models.FloatField()
-    average_assistants = models.FloatField()
-    average_damage = models.IntegerField()
-    average_rank = models.FloatField()
-    top1 = models.FloatField()
-    top2 = models.FloatField()
-    top3 = models.FloatField()
-    total_mmr_gain = models.IntegerField()
+    class Meta:
+        indexes = [
+            models.Index(fields=['player_stat', 'character_code']),
+        ]

@@ -21,9 +21,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from .serializers import *
 from thomas.models import BattleRecord, GameInfo
-from django.db.models import Sum, Avg
+from django.db.models import Sum, Avg, Count, QuerySet, Case, When, Max
 from django.db.models.functions import TruncDate
-from datetime import timedelta, date
 from pprint import pp
 
 
@@ -37,6 +36,7 @@ class PlayerViewSet(viewsets.ModelViewSet):
 class PlayerStatsViewSet(viewsets.ModelViewSet):
     queryset = PlayerStat.objects.all()
     serializer_class = PlayerStatsSerializer
+    lookup_field = 'player_id'
 
 
 # MMRHistory ViewSet
@@ -69,7 +69,13 @@ def register_player(request, nickname):
     player_stats_serializer = PlayerStatsSerializer(player_stats, many=True)
 
     for player_stat in player_stats:
-        mmr_histories = update_or_create_mmr_history(player_stat)
+        # Fetch GameInfo based on PlayerStats.
+        games = GameInfo.objects.filter(user_num=player_stat.player.user_num, season_id=player_stat.season_id,
+                                        matching_mode=player_stat.matching_mode,
+                                        matching_team_mode=player_stat.matching_team_mode)
+
+        mmr_histories = update_or_create_mmr_history(player_stat=player_stat, player_games=games)
+        character_stats = update_or_create_character_stats(player_stat=player_stat, player_games=games)
 
     return Response(player_stats_serializer.data, status=status.HTTP_201_CREATED)
     # except Exception as e:
@@ -79,7 +85,6 @@ def register_player(request, nickname):
 
 def update_or_create_player_stats(player: Player, season_id: int = CURRENT_SEASON):
     er_user_stats = ER.fetch_user_stats(user_num=player.user_num, season_id=season_id)
-    # TODO: Solo, Duo 도 따로 처리 해줘야 함6
     player_stats = []
     for er_user_stat in er_user_stats:
         # 전적 데이터 검색
@@ -113,24 +118,21 @@ def update_or_create_player_stats(player: Player, season_id: int = CURRENT_SEASO
             }
         )
         player_stats.append(stat)
-
-        update_or_create_character_stats(stat, er_character_stats=er_user_stat.get('characterStats', None))
-
     return player_stats
     pass
 
 
-def update_or_create_mmr_history(player_stat: PlayerStat):
+def update_or_create_mmr_history(player_stat: PlayerStat, player_games: QuerySet):
+    """
+    :param player_stat: player_stat
+    :param player_games: Fetch GameInfo(s) based on PlayerStats.
+    :return: mmr_histories in 10 days
+    """
     # Rank Game Data only
     mmr_histories = []
     try:
-        # Fetch GameInfo based on PlayerStats.
-        games = GameInfo.objects.filter(user_num=player_stat.player.user_num, season_id=player_stat.season_id,
-                                        matching_mode=player_stat.matching_mode,
-                                        matching_team_mode=player_stat.matching_team_mode)
-
         # start_dtm에서 날짜만 추출하고 중복되지 않은 날짜들 중 가장 최신 10개 가져오기
-        recent_dates = (games
+        recent_dates = (player_games
                         .annotate(date=TruncDate('start_dtm'))  # 날짜만 추출
                         .order_by('-date')  # 최신 날짜부터 정렬
                         .distinct()  # 중복 제거
@@ -138,7 +140,7 @@ def update_or_create_mmr_history(player_stat: PlayerStat):
                         )
 
         for timestamp in recent_dates:
-            one_day_games = games.filter(start_dtm__date=timestamp)
+            one_day_games = player_games.filter(start_dtm__date=timestamp)
             if one_day_games:
                 mmr_history, is_created = MMRHistory.objects.update_or_create(
                     player_stat=player_stat,
@@ -157,33 +159,84 @@ def update_or_create_mmr_history(player_stat: PlayerStat):
 
 
 # TODO: API에서 불러온 값 저장하고 캐릭터 통계 Object Manager 계산해야함
-def update_or_create_character_stats(player_stat: PlayerStat, er_character_stats: dict):
-    if er_character_stats is None:
-        return None
+def update_or_create_character_stats(player_stat: PlayerStat, player_games: QuerySet):
+    most_played_characters = (player_games
+                              .values('character_num')  # character_num 별로 그룹화
+                              .annotate(total_games=Count('character_num'),  # 플레이 횟수 카운트
+                                        average_rank=Avg('game_rank'),
+                                        total_mmr_gain=Sum('mmr_gain'),
+                                        top1=Sum(Case(  # 승리 횟수 카운트
+                                            When(victory=True, then=1),
+                                            default=0,
+                                        )),
+                                        top2=Sum(Case(  # 2등 카운트
+                                            When(game_rank=2, then=1),
+                                            default=0,
+                                        )),
+                                        top3=Sum(Case(  # 3등 카운트
+                                            When(game_rank=3, then=1),
+                                            default=0,
+                                        )),
+                                        max_killings=Max('battle_record__player_kill'),
+                                        average_team_kills=Avg('battle_record__team_kill'),
+                                        average_kills=Avg('battle_record__player_kill'),
+                                        average_assistants=Avg('battle_record__player_assistant'),
+                                        average_damage=Avg('battle_record__damage_to_player'),
+                                        )
+                              .order_by('-total_games')  # 플레이 횟수 기준으로 내림차순 정렬
+                              )
 
     character_stats = []
-    for er_character_stat in er_character_stats:
-        pp(er_character_stat)
+    for most_played_character in most_played_characters:
+        character_code = most_played_character.get('character_num')
+        character_games = player_games.filter(character_num=character_code)
+        # 각 컬럼의 값을 쿼리셋으로 가져와서 리스트 형태로 추출
+        most_used_skin_code_list = character_games.values_list('equipment_and_traits__skin_code', flat=True)
+        most_weapon_list = character_games.values_list('equipment_and_traits__best_weapon', flat=True)
+        most_tactical_skill_group_list = player_games.values_list('equipment_and_traits__tactical_skill_group',
+                                                                  flat=True)
+        most_trait_first_core_list = character_games.values_list('equipment_and_traits__trait_first_core', flat=True)
+        most_trait_first_sub_list = character_games.values_list('equipment_and_traits__trait_first_sub', flat=True)
+        most_trait_second_sub_list = character_games.values_list('equipment_and_traits__trait_second_sub', flat=True)
+
+        from collections import Counter
+        # 최빈값 계산
+        most_used_skin_code = Counter(most_used_skin_code_list).most_common(1)[0][0]
+        most_weapon = Counter(most_weapon_list).most_common(1)[0][0]
+        most_tactical_skill_group = Counter(most_tactical_skill_group_list).most_common(1)[0][0]
+        most_trait_first_core = Counter(most_trait_first_core_list).most_common(1)[0][0]
+
+        # JSONField인 경우, 내부 데이터를 파싱한 뒤 계산
+        most_trait_first_sub = Counter([tuple(sub) for sub in most_trait_first_sub_list]).most_common(1)[0][0]
+        most_trait_second_sub = Counter([tuple(sub) for sub in most_trait_second_sub_list]).most_common(1)[0][0]
+
+        # 하나 하나 할당해도 되는데, character_num를 제거해서 귀찮음을 해결
+        most_played_character.pop('character_num')
         stat, is_created = CharacterStats.objects.update_or_create(
             player_stat=player_stat,
-            character_stats=er_character_stat.get('characterCode'),
+            character_code=character_code,
             defaults={
-                'total_mmr_gain': 0,  # GameInfo에서 mmr 획득 총량 계산하기
-                'maxKillings': er_character_stat.get('maxKillings'),
-                'total_games': er_character_stat.get('usages'),
-                'total_wins': er_character_stat.get('totalWins'),
-                'average_rank': er_character_stat.get('averageRank'),
-                # 'total_team_kills': er_character_stat.get('totalTeamKills'),
-                # 'average_kills': er_character_stat.get('averageKills'),
-                # 'average_assistants': er_character_stat.get('averageAssistants'),
-                'average_damage': 0,  # 얘도 평딜 계산 필요
-                # 'top1': er_character_stat.get('top1'),
-                # 'top2': er_character_stat.get('top2'),
-                # 'top3': er_character_stat.get('top3'),
+                # 'total_games': most_played_character.get('total_games'),
+                # 'max_killings': most_played_character.get('max_killings'),
+                # 'average_rank': most_played_character.get(),
+                # 'top1': most_played_character.get('top1'),
+                # 'top2': most_played_character.get(),
+                # 'top3': most_played_character.get(),
+                # 'total_mmr_gain': most_played_character.get(''),
+                #
+                # 'average_team_kills': most_played_character.get('a'),
+                # 'average_kills': most_played_character.get(),
+                # 'average_assistants': most_played_character.get(),
+                # 'average_damage': most_played_character.get(),
+                'most_used_skin_code': most_used_skin_code,
+                'most_weapon': most_weapon,
+                'most_tactical_skill_group': most_tactical_skill_group,
+                'most_trait_first_core': most_trait_first_core,
+                'most_trait_first_sub': most_trait_first_sub,
+                'most_trait_second_sub': most_trait_second_sub,
+                **most_played_character,
+
             }
         )
-    try:
-
-        pass
-    except Exception as e:
-        print(e)
+        character_stats.append(stat)
+    return character_stats

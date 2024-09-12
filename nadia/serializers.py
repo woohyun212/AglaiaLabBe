@@ -57,10 +57,22 @@ class CharacterStatsSerializer(serializers.ModelSerializer):
         # ]
 
 
-class PlayerStatsSerializer(serializers.ModelSerializer):
+class CharacterStatsSimpleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CharacterStats
+        fields = ['character_code', 'total_games',
+                  'average_team_kills', 'average_kills', 'average_assistants',
+                  'average_damage', 'average_rank', 'top1', 'top2', 'top3', 'total_mmr_gain',
+                  'most_used_skin_code', 'most_weapon', 'most_tactical_skill_group',
+                  'most_trait_first_core', 'most_trait_first_sub', 'most_trait_second_sub',
+                  ]
+
+
+class PlayerStatsSerializer(serializers.HyperlinkedModelSerializer):
     player = PlayerSerializer()  # Nested serializer to include player info
     average_team_kills = serializers.SerializerMethodField()
     mmr_history = FormattedMMRHistorySerializer(many=True)
+    character_stats = CharacterStatsSimpleSerializer(many=True)
 
     def get_average_team_kills(self, obj):
         # a/b 계산 수행 (b가 0이 아닌 경우만)
@@ -69,11 +81,15 @@ class PlayerStatsSerializer(serializers.ModelSerializer):
     class Meta:
         model = PlayerStat
         # fields = '__all__'
-        fields = [
-            'player', 'season_id', 'matching_mode', 'matching_team_mode',
+        fields = ['url','player',
+            'player_id', 'season_id', 'matching_mode', 'matching_team_mode',
             'mmr', 'rank', 'rank_size', 'rank_percent', 'total_games',
             'total_wins', 'average_rank', 'total_team_kills', 'average_team_kills',
             'average_kills', 'average_assistants', 'average_damage',
             'average_hunts', 'top1', 'top2', 'top3', 'top5', 'top7',
-            'mmr_history'
+            'mmr_history', 'character_stats'
         ]
+
+        extra_kwargs = {
+            'url': {'lookup_field': 'player_id'}
+        }
